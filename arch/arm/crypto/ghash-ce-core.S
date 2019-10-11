@@ -33,6 +33,7 @@
 	XH_L		.req	d14
 
 	.text
+	.arch		armv8-a
 	.fpu		crypto-neon-fp-armv8
 
 	/*
