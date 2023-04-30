@@ -608,6 +608,9 @@ bool cfg80211_chandef_usable(struct wiphy *wiphy,
 	if (WARN_ON(!cfg80211_chandef_valid(chandef)))
 		return false;
 
+	if (WARN_ON(!wiphy))
+		return false;
+
 	ht_cap = &wiphy->bands[chandef->chan->band]->ht_cap;
 	vht_cap = &wiphy->bands[chandef->chan->band]->vht_cap;
 
