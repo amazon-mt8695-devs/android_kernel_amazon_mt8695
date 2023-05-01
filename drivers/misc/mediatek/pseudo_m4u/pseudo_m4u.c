@@ -1269,7 +1269,7 @@ int __m4u_get_user_pages(int eModuleID, struct task_struct *tsk, struct mm_struc
 				(vma->vm_flags & VM_WRITE), 0, &page, NULL);
 #else
 			ret = get_user_pages(current, current->mm, start, 1,
-				(vma->vm_flags & VM_WRITE), 0, &page, NULL);
+				(vma->vm_flags & VM_WRITE) ? FOLL_WRITE : 0, &page, NULL);
 #endif
 			if (ret == 1)
 				pages[i] = page;
@@ -1321,7 +1321,7 @@ int __m4u_get_user_pages(int eModuleID, struct task_struct *tsk, struct mm_struc
 					(vma->vm_flags & VM_WRITE), 0, &page, NULL);
 #else
 				ret = get_user_pages(current, current->mm, start, 1,
-				(vma->vm_flags & VM_WRITE), 0, &page, NULL);
+				(vma->vm_flags & VM_WRITE) ? FOLL_WRITE : 0, &page, NULL);
 #endif
 				if (ret == 1)
 					pages[i] = page;
