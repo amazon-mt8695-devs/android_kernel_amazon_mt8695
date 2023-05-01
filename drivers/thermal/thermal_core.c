@@ -45,10 +45,6 @@
 #include "thermal_core.h"
 #include "thermal_hwmon.h"
 
-#ifdef CONFIG_AMAZON_SIGN_OF_LIFE
-#include <linux/sign_of_life.h>
-#endif
-
 #ifdef CONFIG_AMAZON_METRICS_LOG
 #include <linux/metricslog.h>
 #include <linux/vmalloc.h>
@@ -515,15 +511,6 @@ static void handle_critical_trips(struct thermal_zone_device *tz,
 		tz->ops->notify(tz, trip, trip_type);
 
 	if (trip_type == THERMAL_TRIP_CRITICAL) {
-#ifdef CONFIG_AMAZON_SIGN_OF_LIFE
-		if (!strncmp(tz->type, "soc_thermal", sizeof("soc_thermal") - 1))
-			life_cycle_set_thermal_shutdown_reason(THERMAL_SHUTDOWN_REASON_SOC);
-		else if (!strncmp(tz->type, "board_thermal", sizeof("board_thermal") - 1) ||
-				 !strncmp(tz->type, "virtual_sensor", sizeof("virtual_sensor") - 1))
-			life_cycle_set_thermal_shutdown_reason(THERMAL_SHUTDOWN_REASON_PCB);
-		else
-			dev_err(&tz->device, "Thermal zone: %s reaching critial", tz->type);
-#endif
 #ifdef CONFIG_AMAZON_METRICS_LOG
 		snprintf(buf, THERMO_METRICS_STR_LEN,
 				"%s,thermal_temp=%d;CT;1,thermal_caught_shutdown=1;CT;1:NR",

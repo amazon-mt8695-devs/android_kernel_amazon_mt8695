@@ -23,13 +23,6 @@ config AMAZON_METRICS_LOG_TEST
 	---help---
 		Enable Amazon Metrics/Vitals logger test module
 
-config AMAZON_SIGN_OF_LIFE
-	bool "Amazon Sign of Life"
-	default n
-	help
-		Enable the life cycle metrics to log device boot and
-		shutdown information
-
 endif # if AMAZON
 
 endmenu
