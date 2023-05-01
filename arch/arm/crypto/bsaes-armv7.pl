@@ -705,10 +705,6 @@ $code.=<<___;
 # define __ARM_MAX_ARCH__ 7
 #endif
 
-#ifdef __thumb__
-# define adrl adr
-#endif
-
 #if __ARM_MAX_ARCH__>=7
 .arch	armv7-a
 .fpu	neon
@@ -1411,8 +1407,11 @@ bsaes_ctr32_encrypt_blocks:
 .align	2
 0:	add	r12, $key, #248
 	vld1.8	{@XMM[0]}, [$ctr]		@ load counter
-	adrl	$ctr, .LREVM0SR			@ borrow $ctr
-	vldmia	r12, {@XMM[4]}			@ load round0 key
+        adr     $ctr, .LREVM0SR_label
+        ldr     $fp,  =(.LREVM0SR_label - .LREVM0SR)
+        sub     $ctr, $ctr, $fp
+        vldmia	r12, {@XMM[4]}			@ load round0 key
+.LREVM0SR_label:
 	sub	sp, #0x10			@ place for adjusted round0 key
 #endif
 

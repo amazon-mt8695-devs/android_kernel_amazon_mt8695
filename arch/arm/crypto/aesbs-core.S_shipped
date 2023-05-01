@@ -62,10 +62,6 @@
 # define __ARM_MAX_ARCH__ 7
 #endif
 
-#ifdef __thumb__
-# define adrl adr
-#endif
-
 #if __ARM_MAX_ARCH__>=7
 .arch	armv7-a
 .fpu	neon
@@ -1368,8 +1364,11 @@ bsaes_ctr32_encrypt_blocks:
 .align	2
 0:	add	r12, r3, #248
 	vld1.8	{q0}, [r8]		@ load counter
-	adrl	r8, .LREVM0SR			@ borrow r8
+        adr     r8, .LREVM0SR_label
+        ldr     r9, =(.LREVM0SR_label - .LREVM0SR)
+        sub     r8, r8, r9
 	vldmia	r12, {q4}			@ load round0 key
+.LREVM0SR_label:
 	sub	sp, #0x10			@ place for adjusted round0 key
 #endif
 
