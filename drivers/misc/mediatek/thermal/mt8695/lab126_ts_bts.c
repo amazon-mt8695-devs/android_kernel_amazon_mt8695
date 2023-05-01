@@ -39,16 +39,6 @@
 #include <linux/iio/iio.h> /* for dereferncing struct iio_dev */
 #include "board_id.h"
 
-#ifdef CONFIG_AMAZON_METRICS_LOG
-#include <linux/metricslog.h>
-#include <linux/vmalloc.h>
-#define METRICSCOUNT 900
-#ifndef THERMO_METRICS_STR_LEN
-#define THERMO_METRICS_STR_LEN 128
-#endif
-static int metrics_cnt;
-#endif
-
 #ifdef CONFIG_IIO
 #define USE_AUXADC_API 0
 #else
@@ -338,11 +328,6 @@ static DEFINE_MUTEX(BTS_lock);
 int mtkts_bts_get_hw_temp(int index, int *temp)
 {
 	int t_ret=0, ret=0;
-#ifdef CONFIG_AMAZON_METRICS_LOG
-	char buf[THERMO_METRICS_STR_LEN + 1];
-	char *thermal_metric_prefix = "tmon:def";
-#endif
-
 
 	mutex_lock(&BTS_lock);
 
@@ -366,20 +351,6 @@ int mtkts_bts_get_hw_temp(int index, int *temp)
 		ret = -EINVAL;
 	}
 
-
-#ifdef CONFIG_AMAZON_METRICS_LOG
-	if (!index)
-		metrics_cnt++;
-	if ((METRICSCOUNT <= metrics_cnt) && (metrics_cnt < METRICSCOUNT+AUX_CHANNEL_NUM)){
-		snprintf(buf, THERMO_METRICS_STR_LEN,
-				"%s:thermistor%d=%d;CT;1:NR",
-				thermal_metric_prefix, index, t_ret);
-		log_to_metrics(ANDROID_LOG_INFO, "ThermalEvent", buf);
-		metrics_cnt++;
-	}
-	if(metrics_cnt == METRICSCOUNT+AUX_CHANNEL_NUM)
-		metrics_cnt = 0;
-#endif
 	pr_debug("[ntc_bts_get_hw_temp] index %d T_AP, %d\n", index, t_ret);
 	*temp = t_ret;
 
@@ -586,9 +557,6 @@ static int ntc_bts_probe(struct platform_device *pdev)
 		pr_err("%s Failed to create params attr\n", __func__);
 
 	serial++;
-#ifdef CONFIG_AMAZON_METRICS_LOG
-	metrics_cnt = 0;
-#endif
 
 	return 0;
 }

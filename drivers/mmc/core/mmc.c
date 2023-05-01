@@ -20,13 +20,6 @@
 #include <linux/mmc/card.h>
 #include <linux/mmc/mmc.h>
 
-#ifdef CONFIG_AMAZON_METRICS_LOG
-#include <linux/metricslog.h>
-#include <linux/vmalloc.h>
-#define LMK_METRIC_TAG "kernel"
-#define METRICS_LIFETIME_DATA_LEN 128
-#endif
-
 #include "core.h"
 #include "host.h"
 #include "bus.h"
@@ -375,10 +368,6 @@ static int mmc_decode_ext_csd(struct mmc_card *card, u8 *ext_csd)
 	struct device_node *np;
 	bool broken_hpi = false;
 
-#ifdef CONFIG_AMAZON_METRICS_LOG
-	char *buf;
-#endif
-
 	/* Version is coded in the CSD_STRUCTURE byte in the EXT_CSD register */
 	card->ext_csd.raw_ext_csd_structure = ext_csd[EXT_CSD_STRUCTURE];
 	if (card->csd.structure == 3) {
@@ -634,18 +623,6 @@ static int mmc_decode_ext_csd(struct mmc_card *card, u8 *ext_csd)
 
 		pr_info("[%s]: Device life time estimation type A:%x, life time estimation type B:%x\n", __func__,
 						card->ext_csd.device_life_time_est_typ_a, card->ext_csd.device_life_time_est_typ_b);
-#ifdef CONFIG_AMAZON_METRICS_LOG
-		buf = vmalloc(METRICS_LIFETIME_DATA_LEN * sizeof(char));
-		if(buf != NULL){
-			snprintf(buf, METRICS_LIFETIME_DATA_LEN,
-				"emmc:info:est_life_time_type_a_%x=1, est_life_time_type_b_%x=1;CT;1:NR",
-				card->ext_csd.device_life_time_est_typ_a, card->ext_csd.device_life_time_est_typ_b);
-			log_to_metrics(ANDROID_LOG_INFO, LMK_METRIC_TAG, buf);
-			vfree(buf);
-		} else {
-			pr_warn("allocate metrics buf error for emmc");
-		}
-#endif
 	}
 out:
 	return err;
