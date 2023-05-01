@@ -14,7 +14,7 @@ struct gro_cells {
 	struct gro_cell __percpu	*cells;
 };
 
-static inline int gro_cells_receive(struct gro_cells *gcells, struct sk_buff *skb)
+static inline void gro_cells_receive(struct gro_cells *gcells, struct sk_buff *skb)
 {
 	struct gro_cell *cell;
 	struct net_device *dev = skb->dev;
