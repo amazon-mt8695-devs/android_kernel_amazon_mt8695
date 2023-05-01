@@ -37,7 +37,7 @@ static int bring_up_probe(struct platform_device *pdev)
 		n = sprintf(clk_name_buf, "%d", i);
 		/* Handle snprintf() error */
 		if (n < 0 || n >= sizeof(clk_name_buf))
-			strcpy(clk_name_buf, "clk-bring-up: unknown error");
+			strcpy(clk_name_buf, "unknown error");
 
 		clk = devm_clk_get(&pdev->dev, clk_name_buf);
 		if (!IS_ERR(clk))
