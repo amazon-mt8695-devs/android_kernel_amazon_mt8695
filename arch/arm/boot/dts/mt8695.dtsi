@@ -1469,15 +1469,6 @@
 		clock-names = "GCPU";
 	};
 
-        firmware: firmware {
-                android: android {
-                        compatible = "android,firmware";
-                        fstab: fstab {
-                                compatible = "android,fstab";
-                        };
-                };
-        };
-
         odm: odm {
                 compatible = "simple-bus";
                 /* reserved for overlay by odm */
