@@ -433,7 +433,7 @@
 		CALL(sys_ni_syscall)
 		CALL(sys_ni_syscall)
 		CALL(sys_ni_syscall)
-		CALL(sys_ni_syscall)
+		CALL(sys_pidfd_send_signal)
 /* 425 */		CALL(sys_ni_syscall)
 		CALL(sys_ni_syscall)
 		CALL(sys_ni_syscall)
